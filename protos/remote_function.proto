@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+package remote_function;
+
+service RemoteFunction {
+  rpc invoke(stream ToFunction) returns (stream FromFunction);
+}
+
+message ToFunction {
+  FunctionId id = 1;
+  bytes state = 254;
+  bytes argument = 255;
+}
+
+message FromFunction {
+  FunctionId id = 1;
+
+  repeated FunctionInvocation outgoing_messages = 253;
+  bytes state_changes = 254;
+  bytes return_value = 255;
+}
+
+message FunctionId {
+  string id = 1;
+  string function_type = 2;
+}
+
+message FunctionInvocation {
+  FunctionId invocation_target = 1;
+  bytes argument = 2;
+}
