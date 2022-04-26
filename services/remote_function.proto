@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-import "google/protobuf/empty.proto";
-package remote_function;
+package dev.restate.proto.services;
 
 service RemoteFunction {
   rpc invoke(stream ToFunction) returns (stream FromFunction);
