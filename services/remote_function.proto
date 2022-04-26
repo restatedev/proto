@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.restate.proto.services;
 
-service RemoteFunction {
+service RemoteFunctionService {
   rpc invoke(stream ToFunction) returns (stream FromFunction);
 }
 
