@@ -1,8 +1,13 @@
 syntax = "proto3";
 
-package dev.restate.proto.services;
+option java_multiple_files = true;
+option java_package = "dev.restate.grpc.remotefunction";
+option java_outer_classname = "RemoteFunctionProto";
+option objc_class_prefix = "RFUNC";
 
-service RemoteFunctionService {
+package remotefunction;
+
+service RemoteFunction {
   rpc invoke(stream ToFunction) returns (stream FromFunction);
 }
 
@@ -14,7 +19,6 @@ message ToFunction {
 
 message FromFunction {
   FunctionId id = 1;
-
   repeated FunctionInvocation outgoing_messages = 253;
   bytes state_changes = 254;
   bytes return_value = 255;
