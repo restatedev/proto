@@ -12,21 +12,21 @@ service RemoteFunction {
 }
 
 message ToFunction {
-  FunctionId id = 1;
+  FunctionId function_id = 1;
   bytes state = 254;
   bytes argument = 255;
 }
 
 message FromFunction {
-  FunctionId id = 1;
+  FunctionId function_id = 1;
   repeated FunctionInvocation outgoing_messages = 253;
   bytes state_changes = 254;
   bytes return_value = 255;
 }
 
 message FunctionId {
-  string id = 1;
-  string function_type = 2;
+  bytes key = 1;
+  string method_name = 2;
 }
 
 message FunctionInvocation {
