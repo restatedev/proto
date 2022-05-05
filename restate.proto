@@ -1,0 +1,84 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_package = "dev.restate.generated";
+
+message StateEntry {
+  bytes key = 1;
+  bytes value = 2;
+}
+
+message JournalEntry {
+  enum Status {
+    PENDING = 0;
+    DONE = 1;
+  }
+
+  // Describes the types of journal entries. Journal entries are SDK actions that are recorded in order to make them
+  // re-playable without executing the action again.
+  enum Method {
+    UNKNOWN = 0;
+    // Read a state entry
+    GET = 1;
+    // Write/modify a state entry
+    SET = 2;
+    // Delete a state entry
+    CLEAR = 3;
+    // Put the function to sleep
+    SLEEP = 4;
+    CALL = 5;
+    // Register a (non-deterministic) side-effect to make it re-playable
+    USER_SIDE_EFFECT = 6;
+  }
+
+  Status status = 1;
+  Method method = 2;
+
+  repeated bytes args = 101;
+
+  // in Protobuf v3, there is no way to distinguish between a missing value or an empty (0 bytes) value.
+  // therefore, we use an explicit flag has_value to distinguish between a truly missing value, or an empty
+  // value (i.e. and empty string, or the numeric zero, a false boolean etc').
+  // This distinction is sometimes necessary, where a return value might be an Optional<T>.
+  bool has_value = 102;
+
+  // the serialized form, of the obtained value. This is only present when the @status is DONE.
+  bytes value = 103;
+}
+
+message RestateInput {
+  repeated StateEntry state_entries = 1;
+  repeated JournalEntry journal_entries = 2;
+}
+
+message FireAndForgetCalls {
+  bytes method = 1;
+  bytes id = 2;
+  bytes argument = 3;
+}
+
+message RestateOutput {
+  enum Status {
+    UNKNOWN = 0;
+    // This call has completed (successfully) without any coordination calls.
+    // The side effects (if any) would be:
+    // 1) deleted_state_entries - a list of keys to remove
+    // 2) modified_state_entries - a list of changed key value bindings.
+    //
+    // In addition, the journal is expected to be empty.
+    COMPLETED = 1;
+    // This call has still instructions to execute, but it was suspended on a blocking call.
+    // The reason for suspension will be the last journal element.
+    // Currently it can be either:
+    // 1) "sleep"
+    // 2) "call" - remote service invocation.
+    //
+    SUSPENDED = 2;
+  }
+
+  Status status = 1;
+
+  repeated bytes deleted_state_keys = 2;
+  repeated StateEntry modified_state_entries = 3;
+  repeated JournalEntry journal_entries = 4;
+  repeated FireAndForgetCalls fire_and_forget_calls = 5;
+}
