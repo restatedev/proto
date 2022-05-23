@@ -52,7 +52,7 @@ message RestateInput {
   repeated JournalEntry journal_entries = 2;
 }
 
-message FireAndForgetCalls {
+message FireAndForgetCall {
   bytes method = 1;
   bytes id = 2;
   bytes argument = 3;
@@ -82,5 +82,5 @@ message RestateOutput {
   repeated bytes deleted_state_keys = 2;
   repeated StateEntry modified_state_entries = 3;
   repeated JournalEntry journal_entries = 4;
-  repeated FireAndForgetCalls fire_and_forget_calls = 5;
+  repeated FireAndForgetCall fire_and_forget_calls = 5;
 }
