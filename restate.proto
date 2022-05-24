@@ -52,10 +52,19 @@ message RestateInput {
   repeated JournalEntry journal_entries = 2;
 }
 
+// Identifier of a GRPC method
+message MethodIdentifier {
+  string service = 1;
+  string method = 2;
+}
+
 message FireAndForgetCall {
-  bytes method = 1;
-  bytes id = 2;
-  bytes argument = 3;
+  MethodIdentifier method = 1;
+  bytes key = 2;
+  // This is the non-compressed serialized protobuf message.
+  // It's just the message and NOT Length-Prefixed-Message,
+  // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
+  bytes payload = 3;
 }
 
 message RestateOutput {
