@@ -110,7 +110,7 @@ message FireAndForgetCall {
 // WakeUpCall describes a wakeup invocation of another function
 message WakeUpCall {
   ServiceInvocationId service_invocation_id = 1;
-  string method_name = 2;
+  int32 journal_index = 2;
   bytes payload = 3;
 }
 
