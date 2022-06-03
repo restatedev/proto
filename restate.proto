@@ -13,6 +13,13 @@ message StateEntry {
 }
 
 // Identifier of a GRPC method
+message ServiceInvocationId {
+  string service_name = 1;
+  bytes instance_key = 2;
+  bytes invocation_id = 3;
+}
+
+// Identifier of a GRPC method
 message MethodIdentifier {
   string service = 1;
   string method = 2;
@@ -40,20 +47,25 @@ message JournalEntry {
   }
 
   message SleepEntry {
-    int64 duration = 1;
+    // This is the duration since UNIX Epoch
+    int64 wake_up_time = 1;
   }
 
+  // InternalCallEntry describes a call to another Restate service method
   message InternalCallEntry {
     MethodIdentifier target = 1;
 
     // There must always be a parameter to invoke another method
     bytes parameter = 2;
 
-    // result here is filled only and only if Status == DONE
+    // This is filled only and only if Status == DONE
     bytes result = 3;
   }
 
+  // ExternalCallEntry describes a call to an external service,
+  // which result will asynchronously wake up the function at a later point in time.
   message ExternalCallEntry {
+    // This is filled only and only if Status == DONE
     bytes result = 3;
   }
 
@@ -65,15 +77,15 @@ message JournalEntry {
 
   oneof type {
     // State access
-    GetStateEntry getState = 10;
-    SetStateEntry setState = 11;
-    ClearStateEntry clearState = 12;
+    GetStateEntry get_state = 10;
+    SetStateEntry set_state = 11;
+    ClearStateEntry clear_state = 12;
 
     // System calls to restate
     SleepEntry sleep = 20;
-    InternalCallEntry internalCall = 21;
-    ExternalCallEntry externalCall = 22;
-    UserSideEffectEntry userSideEffect = 23;
+    InternalCallEntry internal_call = 21;
+    ExternalCallEntry external_call = 22;
+    UserSideEffectEntry user_side_effect = 23;
 
     // Any field is provided here to allow SDKs to store arbitrary information,
     // for example to implement SDK specific features
@@ -92,6 +104,13 @@ message FireAndForgetCall {
   // This is the non-compressed serialized protobuf message.
   // It's just the message and NOT Length-Prefixed-Message,
   // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
+  bytes payload = 3;
+}
+
+// WakeUpCall describes a wakeup invocation of another function
+message WakeUpCall {
+  ServiceInvocationId service_invocation_id = 1;
+  string method_name = 2;
   bytes payload = 3;
 }
 
@@ -120,4 +139,5 @@ message RestateOutput {
   repeated StateEntry modified_state_entries = 3;
   repeated JournalEntry journal_entries = 4;
   repeated FireAndForgetCall fire_and_forget_calls = 5;
+  repeated WakeUpCall wake_up_calls = 6;
 }
