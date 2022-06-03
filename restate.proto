@@ -1,4 +1,7 @@
 syntax = "proto3";
+
+import "google/protobuf/any.proto";
+
 option java_multiple_files = true;
 option java_package = "dev.restate.generated";
 
@@ -9,53 +12,78 @@ message StateEntry {
   bytes value = 2;
 }
 
+// Identifier of a GRPC method
+message MethodIdentifier {
+  string service = 1;
+  string method = 2;
+}
+
 message JournalEntry {
   enum Status {
     PENDING = 0;
     DONE = 1;
   }
 
-  // Describes the types of journal entries. Journal entries are SDK actions that are recorded in order to make them
-  // re-playable without executing the action again.
-  enum Method {
-    UNKNOWN = 0;
-    // Read a state entry
-    GET = 1;
-    // Write/modify a state entry
-    SET = 2;
-    // Delete a state entry
-    CLEAR = 3;
-    // Put the function to sleep
-    SLEEP = 4;
-    CALL = 5;
-    // Register a (non-deterministic) side-effect to make it re-playable
-    USER_SIDE_EFFECT = 6;
+  message GetStateEntry {
+    bytes key = 1;
+    bool has_value = 2; // Might be empty
+    bytes value = 3;
+  }
+
+  message SetStateEntry {
+    bytes key = 1;
+    bytes value = 3;
+  }
+
+  message ClearStateEntry {
+    bytes key = 1;
+  }
+
+  message SleepEntry {
+    int64 duration = 1;
+  }
+
+  message InternalCallEntry {
+    MethodIdentifier target = 1;
+
+    // There must always be a parameter to invoke another method
+    bytes parameter = 2;
+
+    // result here is filled only and only if Status == DONE
+    bytes result = 3;
+  }
+
+  message ExternalCallEntry {
+    bytes result = 3;
+  }
+
+  message UserSideEffectEntry {
+    bytes value = 1;
   }
 
   Status status = 1;
-  Method method = 2;
 
-  repeated bytes args = 101;
+  oneof type {
+    // State access
+    GetStateEntry getState = 10;
+    SetStateEntry setState = 11;
+    ClearStateEntry clearState = 12;
 
-  // in Protobuf v3, there is no way to distinguish between a missing value or an empty (0 bytes) value.
-  // therefore, we use an explicit flag has_value to distinguish between a truly missing value, or an empty
-  // value (i.e. and empty string, or the numeric zero, a false boolean etc').
-  // This distinction is sometimes necessary, where a return value might be an Optional<T>.
-  bool has_value = 102;
+    // System calls to restate
+    SleepEntry sleep = 20;
+    InternalCallEntry internalCall = 21;
+    ExternalCallEntry externalCall = 22;
+    UserSideEffectEntry userSideEffect = 23;
 
-  // the serialized form, of the obtained value. This is only present when the @status is DONE.
-  bytes value = 103;
+    // Any field is provided here to allow SDKs to store arbitrary information,
+    // for example to implement SDK specific features
+    google.protobuf.Any unknown = 100;
+  }
 }
 
 message RestateInput {
   repeated StateEntry state_entries = 1;
   repeated JournalEntry journal_entries = 2;
-}
-
-// Identifier of a GRPC method
-message MethodIdentifier {
-  string service = 1;
-  string method = 2;
 }
 
 message FireAndForgetCall {
