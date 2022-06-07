@@ -55,11 +55,15 @@ message JournalEntry {
   message InternalCallEntry {
     MethodIdentifier target = 1;
 
+    // Key of the invocation, if any
+    bool has_key = 2;
+    bytes key = 3;
+
     // There must always be a parameter to invoke another method
-    bytes parameter = 2;
+    bytes parameter = 4;
 
     // This is filled only and only if Status == DONE
-    bytes result = 3;
+    bytes result = 5;
   }
 
   // ExternalCallEntry describes a call to an external service,
@@ -100,11 +104,15 @@ message RestateInput {
 
 message FireAndForgetCall {
   MethodIdentifier method = 1;
-  bytes key = 2;
+
+  // Key of the invocation, if any
+  bool has_key = 2;
+  bytes key = 3;
+
   // This is the non-compressed serialized protobuf message.
   // It's just the message and NOT Length-Prefixed-Message,
   // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
-  bytes payload = 3;
+  bytes payload = 4;
 }
 
 // WakeUpCall describes a wakeup invocation of another function
