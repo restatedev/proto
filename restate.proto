@@ -55,11 +55,15 @@ message JournalEntry {
   message InternalCallEntry {
     MethodIdentifier target = 1;
 
+    // Key of the invocation, if any
+    bool has_key = 2;
+    bytes key = 3;
+
     // There must always be a parameter to invoke another method
-    bytes parameter = 2;
+    bytes parameter = 4;
 
     // This is filled only and only if Status == DONE
-    bytes result = 3;
+    bytes result = 5;
   }
 
   // ExternalCallEntry describes a call to an external service,
@@ -71,6 +75,12 @@ message JournalEntry {
 
   message UserSideEffectEntry {
     bytes value = 1;
+  }
+
+  message WakeUpCallEntry {
+    ServiceInvocationId service_invocation_id = 1;
+    int32 journal_index = 2;
+    bytes payload = 3;
   }
 
   Status status = 1;
@@ -86,6 +96,7 @@ message JournalEntry {
     InternalCallEntry internal_call = 21;
     ExternalCallEntry external_call = 22;
     UserSideEffectEntry user_side_effect = 23;
+    WakeUpCallEntry wake_up_call_entry = 24;
 
     // Any field is provided here to allow SDKs to store arbitrary information,
     // for example to implement SDK specific features
@@ -94,17 +105,24 @@ message JournalEntry {
 }
 
 message RestateInput {
-  repeated StateEntry state_entries = 1;
-  repeated JournalEntry journal_entries = 2;
+  bytes invocation_id = 1;
+  bytes instance_key = 2;
+
+  repeated StateEntry state_entries = 10;
+  repeated JournalEntry journal_entries = 11;
 }
 
 message FireAndForgetCall {
   MethodIdentifier method = 1;
-  bytes key = 2;
+
+  // Key of the invocation, if any
+  bool has_key = 2;
+  bytes key = 3;
+
   // This is the non-compressed serialized protobuf message.
   // It's just the message and NOT Length-Prefixed-Message,
   // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
-  bytes payload = 3;
+  bytes payload = 4;
 }
 
 // WakeUpCall describes a wakeup invocation of another function
