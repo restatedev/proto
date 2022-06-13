@@ -1,34 +1,23 @@
 syntax = "proto3";
 
+package restate.protocol;
+
+import "core.proto";
 import "google/protobuf/any.proto";
 
 option java_multiple_files = true;
-option java_package = "dev.restate.generated";
-
-package restate;
+option java_package = "dev.restate.generated.protocol";
 
 message StateEntry {
   bytes key = 1;
   bytes value = 2;
 }
 
-// Identifier of a GRPC method
-message ServiceInvocationId {
-  string service_name = 1;
-  bytes instance_key = 2;
-  bytes invocation_id = 3;
-}
-
-// Identifier of a GRPC method
-message MethodIdentifier {
-  string service = 1;
-  string method = 2;
-}
-
 message JournalEntry {
   enum Status {
-    PENDING = 0;
-    DONE = 1;
+    UNSPECIFIED = 0;
+    PENDING = 1;
+    DONE = 2;
   }
 
   message GetStateEntry {
@@ -53,7 +42,7 @@ message JournalEntry {
 
   // InternalCallEntry describes a call to another Restate service method
   message InternalCallEntry {
-    MethodIdentifier target = 1;
+    restate.core.MethodIdentifier target = 1;
 
     // Key of the invocation, if any
     bool has_key = 2;
@@ -78,7 +67,7 @@ message JournalEntry {
   }
 
   message WakeUpCallEntry {
-    ServiceInvocationId service_invocation_id = 1;
+    restate.core.ServiceInvocationId service_invocation_id = 1;
     int32 journal_index = 2;
     bytes payload = 3;
   }
@@ -113,7 +102,7 @@ message RestateInput {
 }
 
 message FireAndForgetCall {
-  MethodIdentifier method = 1;
+  restate.core.MethodIdentifier method = 1;
 
   // Key of the invocation, if any
   bool has_key = 2;
@@ -127,14 +116,14 @@ message FireAndForgetCall {
 
 // WakeUpCall describes a wakeup invocation of another function
 message WakeUpCall {
-  ServiceInvocationId service_invocation_id = 1;
+  restate.core.ServiceInvocationId service_invocation_id = 1;
   int32 journal_index = 2;
   bytes payload = 3;
 }
 
 message RestateOutput {
   enum Status {
-    UNKNOWN = 0;
+    UNSPECIFIED = 0;
     // This call has completed (successfully) without any coordination calls.
     // The side effects (if any) would be:
     // 1) deleted_state_entries - a list of keys to remove
