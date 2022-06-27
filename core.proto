@@ -17,3 +17,9 @@ message MethodIdentifier {
   string service = 1;
   string method = 2;
 }
+
+// Definition of a failed result of a call
+message FailedCallResult {
+  int32 code = 1;
+  string message = 2;
+}

@@ -52,7 +52,10 @@ message JournalEntry {
     bytes parameter = 4;
 
     // This is filled only and only if Status == DONE
-    bytes result = 5;
+    oneof result {
+      bytes success = 5;
+      restate.core.FailedCallResult failure = 6;
+    };
   }
 
   // ExternalCallEntry describes a call to an external service,
