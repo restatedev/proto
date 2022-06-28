@@ -18,8 +18,15 @@ message MethodIdentifier {
   string method = 2;
 }
 
-// Definition of a failed result of a call
-message FailedCallResult {
-  int32 code = 1;
-  string message = 2;
+// Definition of a internal or external call result
+message CallResult {
+  message Failure {
+    int32 code = 1;
+    string message = 2;
+  }
+
+  oneof value {
+    bytes success = 1;
+    Failure failure = 2;
+  };
 }
