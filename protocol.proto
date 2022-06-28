@@ -52,14 +52,16 @@ message JournalEntry {
     bytes parameter = 4;
 
     // This is filled only and only if Status == DONE
-    bytes result = 5;
+    restate.core.CallResult result = 5;
   }
 
   // ExternalCallEntry describes a call to an external service,
   // which result will asynchronously wake up the function at a later point in time.
   message ExternalCallEntry {
     // This is filled only and only if Status == DONE
-    bytes result = 3;
+    // Note that failure case here is filled by the sdk,
+    // iff something goes wrong when executing the code that invokes the external system
+    restate.core.CallResult result = 5;
   }
 
   message UserSideEffectEntry {
