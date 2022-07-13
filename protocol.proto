@@ -44,15 +44,11 @@ message JournalEntry {
   message InternalCallEntry {
     restate.core.MethodIdentifier target = 1;
 
-    // Key of the invocation, if any
-    bool has_key = 2;
-    bytes key = 3;
-
     // There must always be a parameter to invoke another method
-    bytes parameter = 4;
+    bytes parameter = 2;
 
     // This is filled only and only if Status == DONE
-    restate.core.CallResult result = 5;
+    restate.core.CallResult result = 3;
   }
 
   // ExternalCallEntry describes a call to an external service,
@@ -61,7 +57,7 @@ message JournalEntry {
     // This is filled only and only if Status == DONE
     // Note that failure case here is filled by the sdk,
     // iff something goes wrong when executing the code that invokes the external system
-    restate.core.CallResult result = 5;
+    restate.core.CallResult result = 1;
   }
 
   message UserSideEffectEntry {
@@ -97,7 +93,6 @@ message JournalEntry {
 
 message RestateInput {
   bytes invocation_id = 1;
-  bytes instance_key = 2;
 
   repeated StateEntry state_entries = 10;
   repeated JournalEntry journal_entries = 11;
@@ -106,14 +101,10 @@ message RestateInput {
 message FireAndForgetCall {
   restate.core.MethodIdentifier method = 1;
 
-  // Key of the invocation, if any
-  bool has_key = 2;
-  bytes key = 3;
-
   // This is the non-compressed serialized protobuf message.
   // It's just the message and NOT Length-Prefixed-Message,
   // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
-  bytes payload = 4;
+  bytes payload = 2;
 }
 
 // WakeUpCall describes a wakeup invocation of another function
