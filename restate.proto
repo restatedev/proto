@@ -1,0 +1,25 @@
+/*
+  This package provides user facing Restate types, which the user can include in their own contracts
+ */
+syntax = "proto3";
+
+package dev.restate.core;
+
+import "google/protobuf/descriptor.proto";
+
+option java_multiple_files = true;
+option java_package = "dev.restate.generated";
+
+enum ServiceType {
+  // protolint:disable:next ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH
+  UNKEYED = 0;
+  KEYED = 2;
+}
+
+extend google.protobuf.ServiceOptions {
+  optional ServiceType service_type = 51234;
+}
+
+extend google.protobuf.FieldOptions {
+  optional bool key = 51234;
+}
