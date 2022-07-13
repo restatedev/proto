@@ -93,6 +93,7 @@ message JournalEntry {
 
 message RestateInput {
   bytes invocation_id = 1;
+  bytes instance_key = 2;
 
   repeated StateEntry state_entries = 10;
   repeated JournalEntry journal_entries = 11;
