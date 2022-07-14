@@ -16,10 +16,15 @@ enum ServiceType {
   KEYED = 1;
 }
 
+enum FieldType {
+  // protolint:disable:next ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH
+  KEY = 0;
+}
+
 extend google.protobuf.ServiceOptions {
   optional ServiceType service_type = 51234;
 }
 
 extend google.protobuf.FieldOptions {
-  optional bool key = 51234;
+  optional FieldType field = 51234;
 }
