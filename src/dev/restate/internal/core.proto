@@ -1,9 +1,9 @@
 syntax = "proto3";
 
-package restate.core;
+package dev.restate.internal.core;
 
 option java_multiple_files = true;
-option java_package = "dev.restate.generated.core";
+option java_package = "dev.restate.generated.internal.core";
 
 // Identifier of a GRPC method
 message ServiceInvocationId {
