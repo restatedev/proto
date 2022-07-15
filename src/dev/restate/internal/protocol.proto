@@ -60,7 +60,7 @@ message JournalEntry {
     restate.core.CallResult result = 1;
   }
 
-  message UserSideEffectEntry {
+  message SideEffectEntry {
     bytes value = 1;
   }
 
@@ -82,7 +82,7 @@ message JournalEntry {
     SleepEntry sleep = 20;
     InternalCallEntry internal_call = 21;
     ExternalCallEntry external_call = 22;
-    UserSideEffectEntry user_side_effect = 23;
+    SideEffectEntry side_effect = 23;
     WakeUpCallEntry wake_up_call_entry = 24;
 
     // Any field is provided here to allow SDKs to store arbitrary information,
@@ -99,7 +99,7 @@ message RestateInput {
   repeated JournalEntry journal_entries = 11;
 }
 
-message FireAndForgetCall {
+message InternalBackgroundCall {
   restate.core.MethodIdentifier method = 1;
 
   // This is the non-compressed serialized protobuf message.
@@ -108,8 +108,8 @@ message FireAndForgetCall {
   bytes payload = 2;
 }
 
-// WakeUpCall describes a wakeup invocation of another function
-message WakeUpCall {
+// CompletedCallbackCall describes a completeCallback invocation of another function
+message CompleteCallbackCall {
   restate.core.ServiceInvocationId service_invocation_id = 1;
   int32 journal_index = 2;
   bytes payload = 3;
@@ -139,6 +139,6 @@ message RestateOutput {
   repeated bytes deleted_state_keys = 2;
   repeated StateEntry modified_state_entries = 3;
   repeated JournalEntry journal_entries = 4;
-  repeated FireAndForgetCall fire_and_forget_calls = 5;
-  repeated WakeUpCall wake_up_calls = 6;
+  repeated InternalBackgroundCall internal_background_calls = 5;
+  repeated CompleteCallbackCall complete_callback_calls = 6;
 }
