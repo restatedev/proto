@@ -1,14 +1,14 @@
 /*
-  This package provides user facing Restate options, which the user can include in their own contracts
+  This package provides user facing Restate extensions, which the user can include in their own contracts
  */
 syntax = "proto3";
 
-package dev.restate;
+package dev.restate.ext;
 
 import "google/protobuf/descriptor.proto";
 
 option java_multiple_files = true;
-option java_package = "dev.restate.generated";
+option java_package = "dev.restate.generated.ext";
 
 enum ServiceType {
   // protolint:disable:next ENUM_FIELD_NAMES_ZERO_VALUE_END_WITH
