@@ -51,6 +51,15 @@ message JournalEntry {
     core.CallResult result = 3;
   }
 
+  message InternalBackgroundCallEntry {
+    core.MethodIdentifier target = 1;
+
+    // This is the non-compressed serialized protobuf message.
+    // It's just the message and NOT Length-Prefixed-Message,
+    // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
+    bytes parameter = 2;
+  }
+
   // ExternalCallEntry describes a call to an external service,
   // which result will asynchronously wake up the function at a later point in time.
   message ExternalCallEntry {
@@ -64,7 +73,7 @@ message JournalEntry {
     bytes value = 1;
   }
 
-  message WakeUpCallEntry {
+  message CompleteCallbackEntry {
     core.ServiceInvocationId service_invocation_id = 1;
     int32 journal_index = 2;
     bytes payload = 3;
@@ -81,9 +90,10 @@ message JournalEntry {
     // System calls to restate
     SleepEntry sleep = 20;
     InternalCallEntry internal_call = 21;
-    ExternalCallEntry external_call = 22;
-    SideEffectEntry side_effect = 23;
-    WakeUpCallEntry wake_up_call_entry = 24;
+    InternalBackgroundCallEntry internal_background_call = 22;
+    ExternalCallEntry external_call = 23;
+    SideEffectEntry side_effect = 24;
+    CompleteCallbackEntry complete_callback = 25;
 
     // Any field is provided here to allow SDKs to store arbitrary information,
     // for example to implement SDK specific features
@@ -97,22 +107,6 @@ message RestateInput {
 
   repeated StateEntry state_entries = 10;
   repeated JournalEntry journal_entries = 11;
-}
-
-message InternalBackgroundCall {
-  core.MethodIdentifier method = 1;
-
-  // This is the non-compressed serialized protobuf message.
-  // It's just the message and NOT Length-Prefixed-Message,
-  // as described here https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md#requests
-  bytes payload = 2;
-}
-
-// CompletedCallbackCall describes a completeCallback invocation of another function
-message CompleteCallbackCall {
-  core.ServiceInvocationId service_invocation_id = 1;
-  int32 journal_index = 2;
-  bytes payload = 3;
 }
 
 message RestateOutput {
@@ -139,6 +133,4 @@ message RestateOutput {
   repeated bytes deleted_state_keys = 2;
   repeated StateEntry modified_state_entries = 3;
   repeated JournalEntry journal_entries = 4;
-  repeated InternalBackgroundCall internal_background_calls = 5;
-  repeated CompleteCallbackCall complete_callback_calls = 6;
 }
