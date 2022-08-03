@@ -70,7 +70,7 @@ message JournalEntry {
   }
 
   message SideEffectEntry {
-    bytes value = 1;
+    core.CallResult result = 1;
   }
 
   message CompleteCallbackEntry {
