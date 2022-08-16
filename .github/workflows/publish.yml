@@ -10,6 +10,11 @@ on:
     tags:
       - v**
 
+env:
+  JF_URL: https://restatedev.jfrog.io
+  JF_USER: ${{ secrets.JFROG_USERNAME }}
+  JF_PASSWORD: ${{ secrets.JFROG_TOKEN }}
+
 jobs:
   publish-proto-to-jfrog:
     runs-on: ubuntu-latest
@@ -21,14 +26,11 @@ jobs:
 
       # Setup JFrog CLI
       - uses: jfrog/setup-jfrog-cli@v2
+      - name: Publish to JFrog
         env:
           JF_URL: https://restatedev.jfrog.io
-
-          # Basic authentication credentials
           JF_USER: ${{ secrets.JFROG_USERNAME }}
           JF_PASSWORD: ${{ secrets.JFROG_TOKEN }}
-
-      - name: Publish to JFrog
         run: |
           # Figure out the version
           VERSION=${GITHUB_REF/refs\/tags\/v}
@@ -42,5 +44,5 @@ jobs:
           tar -czvf proto-$VERSION.tar.gz dev
           
           # Upload to JFrog
-          jf rt ping
-          jf rt u proto-$VERSION.tar.gz proto-generic-local/dev/restate/proto/
+          jf rt ping --url=$JF_URL/artifactory --user=$JF_USER --password=$JF_PASSWORD
+          jf rt u --url=$JF_URL/artifactory --user=$JF_USER --password=$JF_PASSWORD proto-$VERSION.tar.gz proto-generic-local/dev/restate/proto/
