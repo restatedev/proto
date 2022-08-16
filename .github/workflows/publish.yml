@@ -42,5 +42,6 @@ jobs:
           tar -czvf proto-$VERSION.tar.gz dev
           
           # Upload to JFrog
+          jf c use setup-jfrog-cli-server
           jf rt ping
           jf rt u proto-$VERSION.tar.gz proto-generic-local/dev/restate/proto/
