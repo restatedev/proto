@@ -1,2 +1,5 @@
-# proto
-Protobuf message definitions used by the runtime and the sdks to communicate with each other
+# Restate Protobuf
+
+This repo contains the Restate Protobuf contracts for definining Restate services, core types and built-in services.
+
+For the service protocol contracts, check https://github.com/restatedev/service-protocol
