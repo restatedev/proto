@@ -5,6 +5,8 @@ syntax = "proto3";
 
 package dev.restate;
 
+import "google/protobuf/empty.proto";
+
 option java_multiple_files = true;
 option java_package = "dev.restate.generated";
 option go_package = "restate.dev/sdk-go/pb";
@@ -32,4 +34,32 @@ message InvokeResponse {
   // Generated unique invocation identifier.
   // It can be used to retrieve the status of the invocation and cancel it.
   string sid = 1;
+}
+
+service Awakeables {
+  // Complete an awakeable
+  rpc Complete(CompleteAwakeableRequest) returns (google.protobuf.Empty);
+  // Fail an awakeable
+  rpc Fail(FailAwakeableRequest) returns (google.protobuf.Empty);
+}
+
+message CompleteAwakeableRequest {
+  // Base64 encoded identifier of the awakeable to complete
+  string id = 1;
+
+  // Argument of the invocation.
+  //
+  // When executing requests to the ingress using JSON, this field will be parsed as any JSON,
+  // such as string, object or number.
+  // When executing requests to the ingress using Protobuf, this field must be bytes.
+  // The SDK will parse those bytes using the deserializer specified in the user code.
+  bytes result = 2;
+}
+
+message FailAwakeableRequest {
+  // Base64 encoded identifier of the awakeable to fail
+  string id = 1;
+
+  // Failure reason
+  string reason = 2;
 }
