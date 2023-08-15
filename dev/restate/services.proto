@@ -37,14 +37,14 @@ message InvokeResponse {
 }
 
 service Awakeables {
-  // Complete an awakeable
-  rpc Complete(CompleteAwakeableRequest) returns (google.protobuf.Empty);
-  // Fail an awakeable
-  rpc Fail(FailAwakeableRequest) returns (google.protobuf.Empty);
+  // Resolve an Awakeable with a result value.
+  rpc Resolve(ResolveAwakeableRequest) returns (google.protobuf.Empty);
+  // Reject an Awakeable with a reason.
+  rpc Reject(RejectAwakeableRequest) returns (google.protobuf.Empty);
 }
 
-message CompleteAwakeableRequest {
-  // Base64 encoded identifier of the awakeable to complete
+message ResolveAwakeableRequest {
+  // Base64 encoded identifier of the Awakeable to resolve.
   string id = 1;
 
   // Argument of the invocation.
@@ -56,10 +56,10 @@ message CompleteAwakeableRequest {
   bytes result = 2;
 }
 
-message FailAwakeableRequest {
-  // Base64 encoded identifier of the awakeable to fail
+message RejectAwakeableRequest {
+  // Base64 encoded identifier of the Awakeable to reject.
   string id = 1;
 
-  // Failure reason
+  // Rejection reason.
   string reason = 2;
 }
