@@ -6,6 +6,7 @@ syntax = "proto3";
 package dev.restate;
 
 import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
 
 option java_multiple_files = true;
 option java_package = "dev.restate.generated";
@@ -47,13 +48,13 @@ message ResolveAwakeableRequest {
   // Base64 encoded identifier of the Awakeable to resolve.
   string id = 1;
 
-  // Argument of the invocation.
-  //
-  // When executing requests to the ingress using JSON, this field will be parsed as any JSON,
-  // such as string, object or number.
-  // When executing requests to the ingress using Protobuf, this field must be bytes.
-  // The SDK will parse those bytes using the deserializer specified in the user code.
-  bytes result = 2;
+  oneof result {
+    bytes bytes_result = 2;
+
+    // When executing requests to the ingress using JSON, you can pass a json_result directly for ease of use.
+    // json_result will be sent back to the awakeable as string encoded JSON, not as Protobuf value.
+    google.protobuf.Value json_result = 3;
+  }
 }
 
 message RejectAwakeableRequest {
