@@ -1,6 +1,16 @@
-/*
-  This package provides interfaces for built-in services
- */
+// Restate built-in services.
+// This file contains the definition of Restate built-in services.
+// To invoke them, check out the documentation: https://docs.restate.dev/services/invocation
+//
+// Copyright (c) 2023 - Restate Software, Inc., Restate GmbH
+//
+// This file is part of the Restate service protocol, which is
+// released under the MIT license.
+//
+// You can find a copy of the license in file LICENSE in the root
+// directory of this repository or package, or at
+// https://github.com/restatedev/service-protocol/blob/main/LICENSE
+
 syntax = "proto3";
 
 package dev.restate;

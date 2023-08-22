@@ -1,3 +1,16 @@
+// Restate extensions.
+// This file contains the definition of the protobuf extensions to define Restate services.
+// For more details, check out the documentation: https://docs.restate.dev/services/service_type
+//
+// Copyright (c) 2023 - Restate Software, Inc., Restate GmbH
+//
+// This file is part of the Restate service protocol, which is
+// released under the MIT license.
+//
+// You can find a copy of the license in file LICENSE in the root
+// directory of this repository or package, or at
+// https://github.com/restatedev/service-protocol/blob/main/LICENSE
+
 /*
   This package provides user facing Restate extensions, which the user can include in their own contracts
  */
