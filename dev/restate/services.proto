@@ -1,7 +1,3 @@
-// Restate built-in services.
-// This file contains the definition of Restate built-in services.
-// To invoke them, check out the documentation: https://docs.restate.dev/services/invocation
-//
 // Copyright (c) 2023 - Restate Software, Inc., Restate GmbH
 //
 // This file is part of the Restate service protocol, which is
@@ -9,10 +5,13 @@
 //
 // You can find a copy of the license in file LICENSE in the root
 // directory of this repository or package, or at
-// https://github.com/restatedev/service-protocol/blob/main/LICENSE
+// https://github.com/restatedev/proto/blob/main/LICENSE
 
 syntax = "proto3";
 
+// Restate built-in services.
+// This package contains the definition of Restate built-in services.
+// To invoke them, check out the documentation: https://docs.restate.dev/services/invocation
 package dev.restate;
 
 import "google/protobuf/empty.proto";
