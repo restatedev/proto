@@ -40,3 +40,13 @@ message KeyedEvent {
   string source = 3;
   map<string, string> attributes = 15;
 }
+
+message StringKeyedEvent {
+  // Payload
+  string key = 1 [(dev.restate.ext.field) = KEY];
+  bytes payload = 2;
+
+  // Metadata
+  string source = 3;
+  map<string, string> attributes = 15;
+}
