@@ -68,19 +68,12 @@ message IdempotentInvokeRequest {
   // this field must contain the JSON object representing the argument type of the target method.
   bytes argument = 4;
 
-  // Retention period for the response.
+  // Retention period for the response in seconds.
   // After the invocation completes, the response will be persisted for the given duration.
   // Afterwards, the system will cleanup the response and treats any subsequent invocation with same id as new.
   //
-  // Retention period is parsed using humantime, for example:
-  //
-  // * "1hr": 1 hour
-  // * "30min": 30 minutes
-  // * "5sec": 5 seconds
-  //
-  // See the humantime docs for more details: https://docs.rs/humantime/latest/humantime/fn.parse_duration.html
-  // If not set, "30m" will be used as retention period.
-  string retention_period = 5;
+  // If not set, 30 minutes will be used as retention period.
+  uint32 retention_period_sec = 5;
 }
 
 message IdempotentInvokeResponse {
@@ -89,7 +82,7 @@ message IdempotentInvokeResponse {
   // When executing requests to the ingress using JSON, this field will contain the response as JSON object.
   bytes response = 1;
 
-  // Timestamp of the response expire time in RFC3339.
+  // Timestamp of the response expiry time in RFC3339.
   string expiry_time = 2;
 }
 
