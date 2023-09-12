@@ -25,6 +25,11 @@ service Ingress {
   // Invoke a service and don't wait for the response.
   // It is guaranteed that the service will be invoked after this method returns.
   rpc Invoke(InvokeRequest) returns (InvokeResponse);
+
+  // Invoke a service in an idempotent fashion.
+  // If already invoked, this will return the cached response.
+  // The response will be cleaned up after a retention period.
+  rpc IdempotentInvoke(IdempotentInvokeRequest) returns (IdempotentInvokeResponse);
 }
 
 message InvokeRequest {
@@ -44,6 +49,48 @@ message InvokeResponse {
   // Generated unique invocation identifier.
   // It can be used to retrieve the status of the invocation and cancel it.
   string id = 1;
+}
+
+message IdempotentInvokeRequest {
+  // Idempotency id.
+  string idempotency_id = 1;
+
+  // Fully qualified name of the service, e.g. `counter.Counter`
+  string service = 2;
+
+  // Method name of the service to invoke, e.g. `Add`
+  string method = 3;
+
+  // Argument of the invocation.
+  // When executing requests to the ingress using Protobuf,
+  // this field must contain the serialized Protobuf matching the argument type of the target method.
+  // When executing requests to the ingress using JSON,
+  // this field must contain the JSON object representing the argument type of the target method.
+  bytes argument = 4;
+
+  // Retention period for the response.
+  // After the invocation completes, the response will be persisted for the given duration.
+  // Afterwards, the system will cleanup the response and treats any subsequent invocation with same id as new.
+  //
+  // Retention period is parsed using humantime, for example:
+  //
+  // * "1hr": 1 hour
+  // * "30min": 30 minutes
+  // * "5sec": 5 seconds
+  //
+  // See the humantime docs for more details: https://docs.rs/humantime/latest/humantime/fn.parse_duration.html
+  // If not set, "30m" will be used as retention period.
+  string retention_period = 5;
+}
+
+message IdempotentInvokeResponse {
+  // Invocation response.
+  // When executing requests to the ingress using Protobuf, this field will contain the serialized Protobuf response.
+  // When executing requests to the ingress using JSON, this field will contain the response as JSON object.
+  bytes response = 1;
+
+  // Timestamp of the response expire time in RFC3339.
+  string expiry_time = 2;
 }
 
 service Awakeables {
