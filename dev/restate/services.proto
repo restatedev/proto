@@ -35,14 +35,17 @@ service Ingress {
 message InvokeRequest {
   // Fully qualified name of the service, e.g. `counter.Counter`
   string service = 1;
+
   // Method name of the service to invoke, e.g. `Add`
   string method = 2;
+
   // Argument of the invocation.
-  // When executing requests to the ingress using Protobuf,
-  // this field must contain the serialized Protobuf matching the argument type of the target method.
-  // When executing requests to the ingress using JSON,
-  // this field must contain the JSON object representing the argument type of the target method.
-  bytes argument = 3;
+  // You can pass the invocation argument either as protobuf or as JSON.
+  // In case of JSON, the argument will be automatically transcoded to protobuf.
+  oneof argument {
+    bytes pb = 3;
+    google.protobuf.Struct json = 4 [json_name = "argument"];
+  }
 }
 
 message InvokeResponse {
@@ -62,28 +65,31 @@ message IdempotentInvokeRequest {
   string method = 3;
 
   // Argument of the invocation.
-  // When executing requests to the ingress using Protobuf,
-  // this field must contain the serialized Protobuf matching the argument type of the target method.
-  // When executing requests to the ingress using JSON,
-  // this field must contain the JSON object representing the argument type of the target method.
-  bytes argument = 4;
+  // You can pass the invocation argument either as protobuf or as JSON.
+  // In case of JSON, the argument will be automatically transcoded to protobuf.
+  oneof argument {
+    bytes pb = 4;
+    google.protobuf.Struct json = 5 [json_name = "argument"];
+  }
 
   // Retention period for the response in seconds.
   // After the invocation completes, the response will be persisted for the given duration.
   // Afterwards, the system will cleanup the response and treats any subsequent invocation with same id as new.
   //
   // If not set, 30 minutes will be used as retention period.
-  uint32 retention_period_sec = 5;
+  uint32 retention_period_sec = 6;
 }
 
 message IdempotentInvokeResponse {
   // Invocation response.
-  // When executing requests to the ingress using Protobuf, this field will contain the serialized Protobuf response.
-  // When executing requests to the ingress using JSON, this field will contain the response as JSON object.
-  bytes response = 1;
+  // The response will be provided in the same format used for the request.
+  oneof response {
+    bytes pb = 1;
+    google.protobuf.Struct json = 2 [json_name = "response"];
+  }
 
   // Timestamp of the response expiry time in RFC3339.
-  string expiry_time = 2;
+  string expiry_time = 3;
 }
 
 service Awakeables {
