@@ -12,8 +12,6 @@ syntax = "proto3";
 package dev.restate;
 
 import "dev/restate/ext.proto";
-import "google/protobuf/empty.proto";
-import "google/protobuf/struct.proto";
 
 option java_multiple_files = true;
 option java_package = "dev.restate.generated";
