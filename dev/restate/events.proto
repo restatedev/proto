@@ -27,21 +27,3 @@ message Event {
 
   map<string, string> attributes = 15;
 }
-
-message KeyedEvent {
-  option deprecated = true;
-
-  // Payload
-  bytes key = 1 [(dev.restate.ext.field) = KEY];
-  bytes payload = 2 [(dev.restate.ext.field) = EVENT_PAYLOAD];
-  map<string, string> attributes = 15 [(dev.restate.ext.field) = EVENT_METADATA];
-}
-
-message StringKeyedEvent {
-  option deprecated = true;
-
-  // Payload
-  string key = 1 [(dev.restate.ext.field) = KEY];
-  bytes payload = 2 [(dev.restate.ext.field) = EVENT_PAYLOAD];
-  map<string, string> attributes = 15 [(dev.restate.ext.field) = EVENT_METADATA];
-}
