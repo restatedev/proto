@@ -18,7 +18,7 @@ option java_package = "dev.restate.generated";
 option go_package = "restate.dev/sdk-go/pb";
 
 message Event {
-  bytes ordering_key = 1 [(dev.restate.ext.field) = KEY];
+  string ordering_key = 1 [(dev.restate.ext.field) = KEY];
 
   bytes key = 2;
   bytes payload = 3;
