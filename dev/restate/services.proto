@@ -11,7 +11,7 @@ syntax = "proto3";
 
 // Restate built-in services.
 // This package contains the definition of Restate built-in services.
-// To invoke them, check out the documentation: https://docs.restate.dev/services/invocation
+// To invoke them, check out the documentation: https://docs.restate.dev/operate/invocation
 package dev.restate;
 
 import "google/protobuf/empty.proto";
